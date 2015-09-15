@@ -70,6 +70,14 @@ def parseWaitPhase(line, waitphase):
     else:
         waitphase.text = waitphase.text + ' ' + line
 
+def checkForComment(line, line_nr):
+    line=line.strip()
+    if not len(line):
+        return
+    if line[0] == "'":
+        return
+    raise Exception('invalid line {nr}: "{line}"'.format(nr=line_nr, line=line))
+
 def parseFile(stream):
     recipes = []
 
@@ -120,9 +128,9 @@ def parseFile(stream):
                     state = State.WaitPhase
                     continue
 
-                # also interpret as metadata if there is no '!'
-                parseMeta( line, recipe)
-
+                if start != "'":
+                    # also interpret as metadata if there is no '!'
+                    parseMeta( line, recipe)
 
             elif state == State.Ingredients:
                 if start == '!' or start == '+' or not line:
@@ -135,6 +143,8 @@ def parseFile(stream):
                 
                 if start == '#':
                     phase.ingredients.append(parseIngredient(line))
+                else:
+                    checkForComment(line, line_nr)
 
             elif state == State.Steps:
                 if start == '!' or start == '#' or start == '+' or not line:
@@ -145,6 +155,8 @@ def parseFile(stream):
                     line = line.lstrip('* \t')
                     line = line.rstrip(' \t\n')
                     phase.steps.append(Step(line))
+                else:
+                    checkForComment(line, line_nr)
 
             elif state == State.WaitPhase:
                 if start == '!' or start == '#' or start == '*' or not line:
@@ -159,6 +171,8 @@ def parseFile(stream):
                     continue
                 elif start == '+':
                     parseWaitPhase(line, waitphase)
+                else:
+                    checkForComment(line, line_nr)
            
             elif state == State.FinishPhase:
                 recipe.phases.append(phase)
@@ -176,6 +190,8 @@ def parseFile(stream):
                 recipe = Recipe()
                 state = State.Waiting
                 continue
+            else:
+                checkForComment(line, line_nr)
 
             line = stream.readline()
             if not line and state == State.Waiting:
