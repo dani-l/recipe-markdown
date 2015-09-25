@@ -124,6 +124,7 @@ class parseFileTest(unittest.TestCase):
 test_input = {
     'simple' : """
         ! title: the title
+        ' this is a comment
         # 25g butter
         * eat butter   """,
     'multiphase' : """
