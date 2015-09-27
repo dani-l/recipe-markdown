@@ -121,6 +121,15 @@ class parseFileTest(unittest.TestCase):
         self.assertIsNotNone(context.exception.__cause__)
         self.assertEqual(context.exception.__cause__.args[0], 'invalid metadata key')
 
+    def test_invalid_error(self):
+        with self.assertRaises(RecipeParseError) as context:
+            parseFile(StringIO(test_input['invalid_error']))
+
+        self.assertEqual(context.exception.line, 'this line is invalid')
+        self.assertEqual(context.exception.line_nr, 5)
+        self.assertIsNotNone(context.exception.__cause__)
+        self.assertEqual(context.exception.__cause__.args[0], 'invalid line')
+
 test_input = {
     'simple' : """
         ! title: the title
@@ -146,6 +155,11 @@ test_input = {
         """,
     'meta_error' : """
         ! unknown: foo""",
+    'invalid_error': """
+        !title: recipe with invalid line
+        # something
+
+        this line is invalid""",
     }
 
 test_result = {

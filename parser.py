@@ -76,7 +76,7 @@ def checkForComment(line, line_nr):
         return
     if line[0] == "'":
         return
-    raise Exception('invalid line {nr}: "{line}"'.format(nr=line_nr, line=line))
+    raise Exception('invalid line')
 
 def parseFile(stream):
     recipes = []
