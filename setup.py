@@ -8,9 +8,9 @@ setup(
     description='Recipe Markdown',
 
     author='Andreas Wallner',
-    author_email='A.Wallner@innovative-solutions.ate',
+    author_email='A.Wallner@innovative-solutions.at',
 
-    license='GPLv3',
+    license='MIT',
 
     packages=find_packages(exclude=['contrib', 'docs', 'tests']),
 
